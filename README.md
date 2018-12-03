@@ -3,20 +3,21 @@
 
 A simple openEDX external grader to correct Python code.
 
-## Table of Contents  
-1. [Security warning](#security)  
+## Table of Contents
+1. [Security warning](#security)
 1. [Description](#description)  
 1. [How to use this code](#usage)
-  - [Run server](#run-server)
-  - [Add exercise](#add-exercise)
+   1. [Run server](#run-server)
+   1. [Add exercise](#add-exercise)
 1. [Detailed description](#doc)
-  1. [Solution checker](#solutions)  
-  1. [Testing your code](#tests)  
-  1. [OpenEDX exercises](#advanced-blank-problem)  
-  1. [Setting up the XQueue](#xqueue)  
-  1. [Setting up the grader on Linux](#set-up-grader)  
+   1. [Solution checker](#solutions)  
+   1. [Testing your code](#tests)  
+   1. [OpenEDX exercises](#advanced-blank-problem)  
+   1. [Setting up the XQueue](#xqueue)  
+   1. [Setting up the grader on Linux](#set-up-grader)  
 
 <a name="security"/>
+
 ## Security Warning
 This project does not make any attempt to make the evaluation secure!
 
@@ -26,6 +27,7 @@ One way to reduce these security problems is to run the code inside a virtual ma
 
 
 <a name="description"/>
+
 ## Description
 
 This is an external grader that makes it possible to automatically evaluate Python code from students in openEDX.
@@ -40,16 +42,19 @@ By clicking on "See full output" the student can see all test cases to figure ou
 ![Feedback per test case](doc/images/test_cases.png "Possible test cases")
 
 <a name="usage"/>
+
 ## How to use this code
 You have to setup this grader on a server with an open port and specify this address as X-Queue in the openEDX installation. (More on that later)
 
 <a name="run-server"/>
+
 ### To run this server:
 1. Setup the XQueue in the openEDX installation (see later)
 1. Change 'host' and 'port' inside `main.py`
 1. run `python main.py`
 
 <a name="add-exercise"/>
+
 ### To add new exercises:
 1. Copy the template from `sample/EDX_problem.txt` into a 'Blank Advanced Problem' in your openEDX course.
   1. Change the problem ID in `"problem_name": "PROBLEM-ID"` to a unique identifier.
@@ -62,29 +67,35 @@ You have to setup this grader on a server with an open port and specify this add
 1. Restart grader with `python main.py`
 
 <a name="doc"/>
+
 ## Detailed description
 
 
 <a name="solutions"/>
+
 ### Solution checker
 This section explains the files like `solutions/check_PROBLEM-ID.py` in more details.
 
 *comming soon*
 
 <a name="tests"/>
+
 ### Testing your code
 *comming soon*
 
 <a name="advanced-blank-problem"/>
+
 ### OpenEDX exercises
 This section explains how to setup your exercise in the openEDX course.
 
 *comming soon*
 
 <a name="xqueue"/>
+
 ### Setting up the XQueue
 *comming soon*
 
 <a name="set-up-grader"/>
+
 ### Setting up the grader on a linux machine
 *comming soon*
