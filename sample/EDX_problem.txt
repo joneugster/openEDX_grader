@@ -1,0 +1,34 @@
+<!-- Copy-paste this into a "Blank Advanced Problem": -->
+
+<problem>
+  <coderesponse queuename="QUEUENAME">
+    
+    <label>TASK DESCRIPTION</label>
+    
+    <textbox rows="10" cols="80" mode="python" tabsize="4"/>
+    <codeparam>
+      <initial_display>
+# Please write your program here
+</initial_display>
+      <answer_display>
+# There is no solution available at the moment.
+# Please ask one of the course assistants.
+      </answer_display>
+      <grader_payload>
+        {"problem_name": "PROBLEM-ID"}
+      </grader_payload>
+    </codeparam>
+  </coderesponse>
+</problem>
+
+<!-- Procedure
+0. Change the queuename to the queue name for your grader. (Ask openEDX admin)
+
+1. change PROBLEM-ID to a proper problem name.
+2. Write the problem to TASK DESCRIPTION
+3. add sample solution between the <answer_display> tag
+4. rename your problem under 'Edit > Settings'
+5. For a problem with name PROBLEM-ID, create the files
+    a) solutions/check_PROBLEM-ID.py
+    b) tests/test_PROBLEM-ID.py
+-->
