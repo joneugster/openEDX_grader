@@ -2,6 +2,8 @@
 (This is not in any way affiliated to openEDX or EDX. Just a student hack)
 
 A simple openEDX external grader to correct Python code.
+Download the code to your grading server, edit host and port in `main.py` and run `python main.py`
+(See more under [How to use this code](#usage)).
 
 ## Table of Contents
 1. [Security warning](#security)
@@ -56,11 +58,15 @@ You have to setup this grader on a server with an open port and specify this add
 <a name="add-exercise"/>
 
 ### To add new exercises:
+
+#### In the openEDX course
 1. Copy the template from `sample/EDX_problem.txt` into a 'Blank Advanced Problem' in your openEDX course.
-  1. Change the problem ID in `"problem_name": "PROBLEM-ID"` to a unique identifier.
-  1. Change `QUEUENAME` to your XQueue's name.
-  1. Replace `TASK DESCRIPTION` with HTML formatted text describing the exercise.
-  1. Optionally, add a sample solution inside the `<answer_display>` tag.
+1. Change the problem ID in `"problem_name": "PROBLEM-ID"` to a unique identifier.
+1. Change `QUEUENAME` to your XQueue's name.
+1. Replace `TASK DESCRIPTION` with HTML formatted text describing the exercise.
+1. Optionally, add a sample solution inside the `<answer_display>` tag.
+1. You can change when the students see the answer in the problem by changing "Edit > Settings > Show Answer" or to change the default value under "Settings > Advanced Settings > Show Answer".
+#### On the grading server
 1. Create a file `solutions/check_PROBLEM-ID.py` where you change `PROBLEM-ID` to the exercise's unique identifier. (Use the template `sample/check_PROBLEM-ID.py`)
 1. Copy `sample/test_PROBLEM-ID.py` to `tests/test_PROBLEM-ID.py` and add some basic tests. This is not mandatory but it is recommended to add at least a test where you test if it works with correct solution to catch things like syntax errors.
 1. Run `run_pytest` to check that everything works
