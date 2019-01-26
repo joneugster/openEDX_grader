@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="external-grader-python">External grader Python</h1>
+<p>This is a short description on how to work with the external python grader.</p>
+<h2 id="setup">Setup</h2>
+<p>Due to Firewall settings you will need to work on the Thinlinc machines. You cannot connect from outside to the server using SSH.</p>
+<h3 id="download-source-code">1. Download source code</h3>
+<p>First, you need to download the code. Open Terminal, go to a location (with <code>cd</code>) where you want to save the code and clone the code:</p>
+<pre><code>cd ~/Documents
+git clone ssh://grader@gradermat101.math.uzh.ch/home/grader/python_grader.git python_grader
+</code></pre>
+<blockquote>
+<p>Password: <em>ask Jon…</em></p>
+</blockquote>
+<p>This will create a new folder <code>Documents/python_grader</code> with the newest code in it.</p>
+<h3 id="set-your-name-in-git">2. Set your name in git</h3>
+<p>Now type the following so that we know who uploaded which code:</p>
+<pre><code>cd python_grader
+git config --global user.name "SHORTNAME"
+git config --global user.email "NAME@uzh.ch"
+</code></pre>
+<p>Where you replace <code>SHORTNAME</code> and <code>NAME</code> with your credentials.</p>
+<h3 id="edit-and-upload-code">3. Edit and upload code</h3>
+<h4 id="a-update-code">a) Update code</h4>
+<p>When you start working on the code, enter <code>git pull</code> to download the most recent version of the code. Then edit it with any editor.</p>
+<blockquote>
+<p>Note: <code>git status</code> or <code>git diff</code> will display the changes you made.</p>
+</blockquote>
+<h4 id="b-save-changes">b) Save changes</h4>
+<p><code>git commit -am "MESSAGE"</code> will save your changes, where <code>MESSAGE</code> should describe what you’ve done.</p>
+<blockquote>
+<p>Note: If you added new files, you will need to add them explicitely: <code>git add path/to/my_file.py</code></p>
+</blockquote>
+<h4 id="c-upload">c) Upload</h4>
+<p><code>git push</code> will upload the changes to the server. This will automatically restart the grader, so your changes will be live immediately!</p>
+<blockquote>
+<p>Note: If someone else edited the code meanwhile, you might get an error. In that case enter <code>git pull</code> first and if it says “merge failed”, enter <code>git mergetool</code> to resolve the conflicts. Then push again.</p>
+</blockquote>
+<h2 id="workflow">Workflow</h2>
+<p>A graded exercise comprises 3 components:</p>
+<ul>
+<li>openEDX Problem
+<ul>
+<li>with identifier <code>"problem_name": "PROBLEM-ID"</code></li>
+<li>this is the exercise the students will see.</li>
+</ul>
+</li>
+<li>solution check program
+<ul>
+<li>must be called <code>solutions/check_PROBLEM-ID.py</code></li>
+<li>the code that evaluates the user’s answer.</li>
+</ul>
+</li>
+<li>pytest file
+<ul>
+<li>must be called <code>tests/test_PROBLEM-ID.py</code></li>
+<li>tests if your code above works.</li>
+</ul>
+</li>
+</ul>
+<h3 id="openedx-problem">1. openEDX problem</h3>
+<p>In openEDX Studio, create a new Unit and select <code>Problem &gt; Advanced &gt; Blank Advanced Problem</code>.<br>
+Then you can copy-paste the template:</p>
+<pre><code>&lt;problem&gt;
+  &lt;coderesponse queuename="gradermat101"&gt;
+    
+    &lt;label&gt;TASK DESCRIPTION&lt;/label&gt;
+    
+    &lt;textbox rows="10" cols="80" mode="python" tabsize="4"/&gt;
+    &lt;codeparam&gt;
+      &lt;initial_display&gt;
+# Please write your program here
+&lt;/initial_display&gt;
+      &lt;answer_display&gt;
+# There is no sample answer available at the moment.
+# Please ask one of the course assistants.
+      &lt;/answer_display&gt;
+      &lt;grader_payload&gt;
+        {"problem_name": "PROBLEM-ID"}
+      &lt;/grader_payload&gt;
+    &lt;/codeparam&gt;
+  &lt;/coderesponse&gt;
+&lt;/problem&gt;
+
+</code></pre>
+<h4 id="a-identifier">a) Identifier</h4>
+<p>change the <code>PROBLEM-ID</code> to something unique. You will need this to create the solution and test files.</p>
+<h4 id="b-task-description">b) Task description</h4>
+<p>The <code>&lt;label&gt;TASK DESCRIPTION&lt;/label&gt;</code> can be changed to describe what the students should be doing. You can use regular HTML tags such as <code>&lt;p&gt;</code>, <code>&lt;br/&gt;</code> or <code>&lt;a&gt;</code>.</p>
+<h4 id="c-sample-answer">c) Sample answer</h4>
+<p>Also add a sample solution inside the <code>&lt;answer_display&gt;</code> tag.</p>
+<h3 id="solution-checker">2. Solution checker</h3>
+<p>Create a file <code>solutions/check_PROBLEM-ID.py</code> where the <code>PROBLEM-ID</code> is the one from above. You can copy the code from <code>solutions/TEMPLATE.py</code>.<br>
+This file must contain a function called <code>check</code>:</p>
+<pre><code>def check(code):
+
+	# do some code evaluation ...
+	
+    return {'correct': True,
+            'function': 'f(1)',
+            'result': 0}
+</code></pre>
+<h4 id="argument-code">argument: code</h4>
+<p>The user code will be imported as module and passed on as argument <code>code</code>. So if the student wrote a function <code>f</code>, you can access it with <code>code.f</code>.</p>
+<blockquote>
+<p>Note: Always catch <code>AttributeError</code> in case the student did not name their objects correctly.</p>
+</blockquote>
+<h4 id="return-value">return value</h4>
+<p>The function <code>code</code> must return a dictionary or a list of dictionaries. There are 3 formats a dict. can take:</p>
+<ul>
+<li>Correct:<br>
+<code>{'correct': True, 'function': 'f(1)', 'result': 0}</code></li>
+<li>Wrong:<br>
+<code>{'correct': False, 'function': 'f(1)', 'result': 0, 'expected': 1}</code></li>
+<li>Error:<br>
+<code>{'correct': False, 'error': 'no f defined.'}</code></li>
+</ul>
+<p>You can also return a list with one dictionary per test case, it will then display all of those results to the user.</p>
+<h4 id="tips-for-writing-the-solution-checker">Tips for writing the solution checker</h4>
+<h5 id="plain-code--print-statements">Plain code &amp; <code>print</code> statements</h5>
+<p>First of all, plain code inside a students program will be executed at import. You can access the (printed) output of it with <code>sys.stdout.getvalue()</code> and <code>sys.stderr.getvalue()</code>.<br>
+You can clear them with <code>sys.stdout.truncate(0)</code>.</p>
+<blockquote>
+<p>Note: <code>sys.stdout</code> and <code>sys.stderr</code> have been redirected into python <code>StringIO</code> objects.</p>
+</blockquote>
+<p><em>Example:</em> If you have a function <code>def f(x): print(x)</code> you can test the printed output <code>if sys.stdout.getvalue() == 'hello':</code> and you will need to call <code>sys.stdout.truncate(0)</code> between each function call to clear old output.</p>
+<h5 id="helper-functions">Helper functions</h5>
+<p>Often we need to do the same checking routine for multiple problems. In that case, write your helper function into <code>grading_tools.py</code> and import it with <code>from grading_tools import XYZ</code>.<br>
+Helper functions should return a dictionary or a list of dicts.</p>
+<p><em>Example:</em> the function <code>test_function(fct=None, test_values=None, sol=None)</code> takes a function, a list of values and a list of correct solutions. It calls the function for each given value and compares it to the solution.<br>
+So <code>test_function(abs, [-1, 0, 1], [1, 0, 1])</code> will call the following test cases:</p>
+<pre><code>abs(-1) == 1
+abs(0) == 0
+abs(1) == 1
+</code></pre>
+<h4 id="alternative-check-raw-user-input">alternative: check raw user input</h4>
+<p>instead of <code>check()</code> you can also define a function</p>
+<pre><code>def check_raw(code):
+	# do some code evaluation ...
+    return {'correct': True,
+            'function': 'f(1)',
+            'result': 0}
+</code></pre>
+<p>which takes the code as raw input string – not as imported module – and do the evaluation by yourself.<br>
+See <code>check_TESTRAW.py</code> to see how you can use this to handle <code>input()</code> statements.</p>
+<h3 id="testing-your-solution-checker">3. Testing your solution checker</h3>
+<p>Create a file <code>tests/test_PROBLEM-ID.py</code> with the <code>PROBLEM-ID</code> from above. This file should contain a function starting with <code>test_</code> for example:</p>
+<pre><code>from python_grader.grader import grade
+def test_PROBLEM-ID():
+    """
+    Question:
+        write function `f` that adds two numbers together.
+    """
+    id = 'PROBLEM-ID'
+    
+    # Some mock student code:
+    code = """def f(x,y):\n    return x+y"""
+    
+    # Call the grading function
+    out = grade(id, code)
+	
+	# Check if the code is graded as correct
+    assert out['correct']
+
+</code></pre>
+<blockquote>
+<p>Note: <code>grade</code> will return a dictionary of the form<br>
+<code>{'correct': (bool), 'score': (float), 'msg': (str)}</code>.</p>
+<ul>
+<li><code>correct</code>: boolean, is function correct</li>
+<li><code>score</code>: achieved score between 0 and 1. This just reprecents how many of the test cases in your <code>check</code> function have passed successfully.</li>
+<li><code>msg</code> HTML-formatted text that will be displayed to the student.</li>
+</ul>
+<p>call <code>grade(id, code, do_processing=False)</code> to get back the results as you returned them in the <code>check</code> function.</p>
+</blockquote>
+<h4 id="run-pytest">Run pytest</h4>
+<p>Just open Terminal, go inside the <code>python_grader</code> folder and type <code>pytest</code>.<br>
+This will run your test and all the other tests. <strong>Do no commit code that fails any of the tests.</strong> If it says something like <strong><code>==== 1 failed, 2 passed in 0.60 seconds ====</code></strong>, then you might have some problems in your code.</p>
+</div>
+</body>
+
+</html>

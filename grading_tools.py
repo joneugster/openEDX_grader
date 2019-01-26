@@ -149,3 +149,72 @@ def userinput(code, values, solution=None, expected=None):
             out['correct'] = bool(out['result'] == out['expected'])
         details.append(out)
     return details
+    
+    
+def userinput_generator(code, generators, solutions=None, expected=None):
+    """Tests usercode with `input` and `print` against a solution.
+
+    This is for student code that gets values with a single
+    `input` statement and returns the result with print.
+
+    Arguments:
+        code (str): student code as string.
+        generators (list):
+        solution (function): function that returns the correct results
+                             when called `solution(val1)`
+        expected (list): List of expected output values.
+
+    Note:
+        You must specify either `solution` or `expected`.
+
+    Returns:
+        details (list): List of test results.
+    """
+    if generators is None:
+        raise ValueError('Expected exactly one of the kwargs '
+                         "'solution' or 'expected'.")
+
+    # overwrite builtin input function.
+    class Input():                     # pylint: disable=too-few-public-methods
+        """Overwriting standard input function.
+        
+        Raises:
+            StopIteration: If generator runs out
+        """
+        def __init__(self, gen):
+            self.gen = gen
+
+        def __call__(self, msg=''):
+            # calling `input()` inside the usercode will return `str(value)`.
+            return next(self.gen)
+
+    details = []
+    for i, gen in enumerate(generators):
+        # pylint: disable=redefined-builtin, possibly-unused-variable
+        input = Input(gen)
+
+        # Create test case info text
+        out = dict()
+        out['function'] = ''
+
+        # Get correct solution
+        if solution is not None:
+            out['expected'] = solution(gen)
+        else:
+            out['expected'] = expected[i]
+
+        # evaluate the user code.
+        try:
+            sys.stdout.truncate(0)
+            exec(code, locals())                   # pylint: disable=exec-used
+            # Note: sys.stdout will be redirected to a StringIO
+            # pylint: disable=no-member
+            out['result'] = sys.stdout.getvalue().strip('\u0000\n')
+        except Exception:           # pylint: disable=broad-except
+            out['error'] = traceback.format_exc(limit=0)
+            out['correct'] = False
+        else:
+            out['correct'] = bool(out['result'] == out['expected'])
+        details.append(out)
+    return details
+
