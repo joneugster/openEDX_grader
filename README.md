@@ -179,7 +179,51 @@ The `TASK DESCRIPTION` can be HTML-formatted text.
 ### Setting up the XQueue
 This needs to be done by the system admin managing the openEDX installation. They need the host & port your grader will be running on.
 
-*coming soon*
+(This is also documented at https://edx-gea.readthedocs.io/en/dev/)
+
+#### 1. Install edx-gea
+```
+git clone https://github.com/openfun/edx-gea.git
+cd edx-gea
+pip install .
+```
+
+#### 2. Add edx_gea to installed Django apps
+In /edx/app/edxapp/edx-platform/cms/envs/common.py, add 'edx_gea' to OPTIONAL_APPS
+In /edx/app/edxapp/edx-platform/lms/envs/common.py, add 'edx_gea' to OPTIONAL_APPS
+```
+   OPTIONAL_APPS = (
+      'edx_gea',
+      ...,
+   )
+```
+
+#### 3.Add the following lines to the file /edx/app/xqueue/xqueue.env.json$
+```
+{
+    ...,
+   "XQUEUES": {
+        ...,
+        "my_grader": "http://host:port",
+       ...
+    },
+    ...,
+}
+```
+
+The name `my_grader` is the one used in all problems, `host:port` of your external grader.
+
+#### 4. In studio.openedx.YOURSIDE.com "ToolS" --> "Advanced Settings":
+
+```
+"Advanced Module List":
+[ "...", "edx_gea", "..."]
+```
+
+#### 5. Restart Open edX
+#### 6. Use component in Studio.
+
+    
 
 <a name="set-up-grader"/>
 
